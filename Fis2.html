@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Acústica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            padding-top: 20px;
+        }
+
+        p {
+            color: #666;
+        }
+
+        select,
+        input[type="number"],
+        input[type="radio"] {
+            margin: 5px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select {
+            width: 300px;
+        }
+
+        #inputsContainer {
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #resultado {
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Calculadora de Acústica</h1>
+
+    <p>Seleccione el parámetro que desea calcular:</p>
+    <select id="selectParametro">
+        <option value="rapidezSonido">Rapidez del sonido</option>
+        <option value="temperaturaAire">Temperatura del aire</option>
+        <option value="vibracionSonido">Vibración del sonido</option>
+        <option value="tuboAbiertoCerrado">Tubo abierto o cerrado</option>
+        <option value="intensidad">Intensidad</option>
+        <option value="potencia">Potencia</option>
+        <option value="longitudOnda">Longitud de Onda</option>
+        <option value="amplitud">Amplitud</option>
+        <option value="periodo">Periodo</option>
+        <option value="frecuenciaAngular">Frecuencia Angular</option>
+        <option value="frecuencia">Frecuencia de la onda</option>
+        <option value="velocidad">Velocidad de la onda</option>
+        <option value="numeroOnda">Número de onda</option>
+        <option value="intensidadOnda">Intensidad de una onda</option>
+        <option value="potenciaMax">Potencia Maxima</option>
+        <option value="potenciaMed">Potencia Media</option>
+        <option value="potenciaMedAmplitud">Potencia Media con Amplitud</option>
+        <option value="potenciaMedAmplitud">L.G para el campo eléctrico</option>
+
+    </select><br><br>
+
+    <div id="inputsContainer">
+        <!-- Los campos de entrada se generarán dinámicamente según la selección del usuario -->
+    </div><br>
+
+    <button onclick="calcular()">Calcular</button><br><br>
+
+    <p id="resultado"></p>
+
+    <script>
+        function calcular() {
+            var parametro = document.getElementById('selectParametro').value;
+            var resultado;
+
+            if (parametro === 'rapidezSonido') {
+                var despeje = document.getElementById('selectDespeje').value;
+
+                if (despeje === 'rapidezSonido') {
+                    var moduloElasticidad = parseFloat(document.getElementById('moduloElasticidad').value);
+                    var densidad = parseFloat(document.getElementById('densidad').value);
+                    resultado = Math.sqrt(moduloElasticidad / densidad);
+                    resultado = "La rapidez del sonido es: " + resultado.toFixed(4) + " m/s";
+                } else if (despeje === 'moduloYoung') {
+                    var young = parseFloat(document.getElementById('young').value)
+                    var densidad = parseFloat(document.getElementById('densidad').value);
+                    resultado = Math.pow(velocidad, 2) * young * Math.exp(11);
+                    resultado = "El modulo Young (y) es: " + resultado.toFixed(4) + " Pa";
+                }
+            } else if (parametro === 'temperaturaAire') {
+                var temperaturaReferencia = 273.15; // Kelvin
+                var velocidadReferencia = 331.4; // m/s
+                var temperatura = parseFloat(document.getElementById('temperatura').value);
+                resultado = velocidadReferencia * Math.sqrt(temperatura / temperaturaReferencia);
+                resultado = "La velocidad del sonido a " + temperatura + " grados Celsius es: " + resultado.toFixed(4) + " m/s";
+            } else if (parametro === 'vibracionSonido') {
+                var velocidad = parseFloat(document.getElementById('velocidad').value);
+                var longitud = parseFloat(document.getElementById('longitud').value);
+                var tuboAbierto = document.getElementById('tuboAbierto').checked;
+                var n = parseFloat(document.getElementById('armonico').value);
+                if (tuboAbierto) {
+                    resultado = (n * velocidad) / (2 * longitud);
+                } else {
+                    resultado = (n * velocidad) / (4 * longitud);
+                }
+                resultado = "La frecuencia de vibración del sonido es: " + resultado.toFixed(4) + " Hz";
+            } else if (parametro === 'tuboAbiertoCerrado') {
+                // No se realiza cálculo directo, solo se muestran las opciones
+                var tipoTubo = document.querySelector('input[name="tipoTubo"]:checked').value;
+                resultado = "El tubo es " + tipoTubo;
+            } else if (parametro === 'intensidad') {
+                var potencia = parseFloat(document.getElementById('potencia').value);
+                var area = parseFloat(document.getElementById('area').value);
+                resultado = potencia / area;
+                resultado = "La intensidad es: " + resultado.toFixed(2) + " W/m^2";
+            } else if (parametro === 'potencia') {
+                var intensidad = parseFloat(document.getElementById('intensidad').value);
+                var area = parseFloat(document.getElementById('area').value);
+                resultado = intensidad * area;
+                resultado = "La potencia es: " + resultado.toFixed(2) + " W";
+            } else if (parametro === 'longitudOnda') {
+                var velocidad = parseFloat(document.getElementById('velocidad').value);
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                resultado = velocidad / frecuencia;
+                resultado = "La longitud de onda es: " + resultado.toFixed(4) + " metros";
+            } else if (parametro === 'amplitud') {
+                var amplitud = parseFloat(document.getElementById('amplitud').value);
+                var frecuenciaA = parseFloat(document.getElementById('frecuenciaA').value);
+                // La fórmula para el cálculo de la amplitud necesita ser implementada
+                // resultado = amplitud * sin(frecuenciaA);
+                // resultado = "La Amplitud de la onda es: " + resultado.toFixed(2) + "";
+            } else if (parametro === 'periodo') {
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                resultado = 1 / frecuencia;
+                resultado = "El periodo es: " + resultado.toFixed(2) + " segundos";
+            } else if (parametro === 'frecuenciaAngular') {
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                resultado = 2 * Math.PI * frecuencia;
+                resultado = "La frecuencia angular es: " + resultado.toFixed(4) + " rad/s";
+            } else if (parametro === 'frecuencia') {
+                var velocidad = parseFloat(document.getElementById('velocidad').value);
+                var longitud = parseFloat(document.getElementById('longitud').value);
+                resultado = velocidad / longitud;
+                resultado = "La frecuencia de la onda es: " + resultado.toFixed(4) + " Hz";
+            } else if (parametro === 'velocidad') {
+                var longitud = parseFloat(document.getElementById('longitud').value);
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                resultado = longitud * frecuencia;
+                resultado = "La velocidad de la onda es: " + resultado.toFixed(4) + " m/s";
+            } else if (parametro === 'numeroOnda') {
+                var longitud = parseFloat(document.getElementById('longitud').value);
+                resultado = 2 * Math.PI / longitud;
+                resultado = "El número de onda es: " + resultado.toFixed(4);
+            } else if (parametro === 'intensidadOnda') {
+                var densidad = parseFloat(document.getElementById('densidad').value);
+                var amplitud = parseFloat(document.getElementById('amplitud').value);
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                var nOnda = parseFloat(document.getElementById('nOnda').value);
+                resultado = Math.sqrt(densidad * Math.pow(frecuencia, 2) * Math.pow(amplitud, 2) * Math.pow(nOnda, 2));
+                resultado = "La intensidad de la onda es: " + resultado.toFixed(4);
+            }else if (parametro === 'potenciaMax') {
+                var densidadMasa = parseFloat(document.getElementById('densidadMasa').value);
+                var tension = parseFloat(document.getElementById('tension').value);
+                var frecuencia = parseFloat(document.getElementById('frecuencia').value);
+                var amplitud = parseFloat(document.getElementById('amplitud').value);
+                resultado = Math.sqrt(densidad*tension*Math.pow(frecuencia,2)*Math.pow(amplitud,2));
+                resultado = "La potencia instantanea es: " + resultado.toFixed(2)+"w";
+            }else if (parametro === 'potenciaMed') {
+                var potenciaMax = parseFloat(document.getElementById('potenciaMax').value);
+                resultado = Math.sqrt(potenciaMax);
+                resultado = "La potencia media es: " + resultado.toFixed(2)+"w";
+            }else if (parametro === 'potenciaMedAmplitud') {
+                var potenciaMed = parseFloat(document.getElementById('potenciaMed').value);
+                resultado = Math.pow(1/10,2)*potenciaMed;
+                resultado = "La potencia media con Amplitud es: " + resultado.toFixed(4)+"mW";
+            }else if (parametro === 'L.G.campoElectico') {
+                var divergencia = parseFloat(document.getElementById('divergencia').value);
+                var campoElectico = parseFloat(document.getElementById('campoelectico').value);
+                var col = parseFloat(document.getElementById('campoelectico').value);
+                resultado = densidad/permitividad;
+                resultado = "El campo electico es: " + resultado.toFixed(4)+"mW";
+            }
+S
+            document.getElementById('resultado').innerText = resultado;
+        }
+
+        function generarCamposDeEntrada(parametro) {
+            var inputsContainer = document.getElementById('inputsContainer');
+            inputsContainer.innerHTML = '';
+
+            if (parametro === 'rapidezSonido') {
+                inputsContainer.innerHTML = `
+                    <label for="selectDespeje">Seleccione el despeje:</label>
+                    <select id="selectDespeje">
+                        <option value="rapidezSonido">Rapidez del sonido</option>
+                        <option value="moduloYoung">Módulo Young (y)</option>
+                    </select><br><br>
+                `;
+                if(despeje === 'rapidezSonido'){
+                    inputsContainer.innerHTML = `
+                    <label for="moduloElasticidad">Módulo de elasticidad (Pa):</label>
+                    <input type="number" id="moduloElasticidad"><br><br>
+
+                    <label for="densidad">Densidad (kg/m^3):</label>
+                    <input type="number" id="densidad"><br><br>
+
+                    `;
+                }
+                else if(despeje === 'moduloYoung'){
+                    inputsContainer.innerHTML = `
+                    <label for="velocidad">Velocidad (m/s):</label>
+                    <input type="number" id="velocidad"><br><br>
+
+                    <label for="densidad">Densidad (kg/m^3):</label>
+                    <input type="number" id="densidad"><br><br>
+
+                    <p>Modulo de young<strong> y = v^2 * p </strong></p>
+                    <label for="young">Módulo Young (Pa):</label>
+                    <input type="number" id="young"><br><br>
+                    `;}
+            } else if (parametro === 'moduloYoung') {
+                inputsContainer.innerHTML = `
+                    <label for="temperatura">Temperatura del aire (°C):</label>
+                    <input type="number" id="temperatura"><br><br>
+                `;
+            } else if (parametro === 'vibracionSonido') {
+                inputsContainer.innerHTML = `
+                    <label for="velocidad">Velocidad del sonido (m/s):</label>
+                    <input type="number" id="velocidad"><br><br>
+
+                    <label for="longitud">Longitud de onda (m):</label>
+                    <input type="number" id="longitud"><br><br>
+
+                    <label for="armonico">Número de armónico (n):</label>
+                    <input type="number" id="armonico"><br><br>
+
+                    <input type="radio" id="tuboAbierto" name="tipoTubo" value="abierto">
+                    <label for="tuboAbierto">Tubo abierto</label><br>
+
+                    <input type="radio" id="tuboCerrado" name="tipoTubo" value="cerrado">
+                    <label for="tuboCerrado">Tubo cerrado</label><br><br>
+                `;
+            } else if (parametro === 'tuboAbiertoCerrado') {
+                inputsContainer.innerHTML = `
+                    <input type="radio" id="tuboAbierto" name="tipoTubo" value="abierto">
+                    <label for="tuboAbierto">Tubo abierto</label><br>
+
+                    <input type="radio" id="tuboCerrado" name="tipoTubo" value="cerrado">
+                    <label for="tuboCerrado">Tubo cerrado</label><br><br>
+                `;
+            } else if (parametro === 'intensidad' || parametro === 'potencia') {
+                inputsContainer.innerHTML = `
+                    <label for="potencia">Potencia (W):</label>
+                    <input type="number" id="potencia"><br><br>
+
+                    <label for="area">Área (m^2):</label>
+                    <input type="number" id="area"><br><br>
+                `;
+            } else if (parametro === 'longitudOnda') {
+                inputsContainer.innerHTML = `
+                    <label for="velocidad">Velocidad del sonido (m/s):</label>
+                    <input type="number" id="velocidad"><br><br>
+
+                    <label for="frecuencia">Frecuencia (Hz):</label>
+                    <input type="number" id="frecuencia"><br><br>
+                `;
+            } else if (parametro === 'amplitud') {
+                inputsContainer.innerHTML = `
+                    <label for="amplitud">Amplitud: </label>
+                    <input for type="number" id="amplitud"><br><br>
+
+                    <label for="frecuenciaA">Frecuencia Angular: </label>
+                    <input for type="number" id="frecuenciaA"><br><br>
+                `;
+            } else if (parametro === 'periodo') {
+                inputsContainer.innerHTML = `
+                    <label for="frecuencia">Frecuencia de onda (Hz):</label>
+                    <input type="number" id="frecuencia"><br><br>
+                `;
+            } else if (parametro === 'frecuenciaAngular') {
+                inputsContainer.innerHTML = `
+                    <label for="frecuenciaA">Frecuencia de onda (Hz): </label>
+                    <input for type="number" id="frecuencia"><br><br>
+                `;
+            } else if (parametro === 'frecuencia') {
+                inputsContainer.innerHTML = `
+                    <label for="velocidad">Velocidad (m/s): </label>
+                    <input for type="number" id="velocidad"><br><br>
+
+                    <label for="longitud">Longitud (m): </label>
+                    <input for type="number" id="longitud"><br><br>
+                `;
+            } else if (parametro === 'velocidad') {
+                inputsContainer.innerHTML = `
+                    <label for="longitud">Longitud (m): </label>
+                    <input for type="number" id="longitud"><br><br>
+
+                    <label for="frecuencia">Frecuencia de onda (Hz): </label>
+                    <input for type="number" id="frecuencia"><br><br>
+                `;
+            } else if (parametro === 'numeroOnda') {
+                inputsContainer.innerHTML = `
+                    <label for="longitud">Longitud (m): </label>
+                    <input for type="number" id="longitud"><br><br>
+                `;
+            } else if (parametro === 'intensidadOnda') {
+                inputsContainer.innerHTML = `
+                    <label for="densidad">Densidad (kg/m^3): </label>
+                    <input for type="number" id="densidad"><br><br>
+
+                    <label for="amplitud">Amplitud (m): </label>
+                    <input for type="number" id="amplitud"><br><br>
+
+                    <label for="frecuencia">Frecuencia (rad/s): </label>
+                    <input for type="number" id="frecuencia"><br><br>
+
+                    <label for="nOnda">Numero de Onda (rad/m): </label>
+                    <input for type="number" id="nOnda"><br><br>
+                `;
+            }else if (parametro === 'potenciaMax') {
+                inputsContainer.innerHTML = `
+                    <label for="densidadMasa">Densidad de la Masa (kg/m): </label>
+                    <input for type="number" id="densidadMasa"><br><br>
+
+                    <label for="tension">Tension (N): </label>
+                    <input for type="number" id="tension"><br><br>
+
+                    <label for="frecuencia">Frecuencia (rad/s): </label>
+                    <input for type="number" id="frecuencia"><br><br>
+
+                    <label for="amplitud">Amplitud (m): </label>
+                    <input for type="number" id="amplitud"><br><br>
+                `;
+            }else if (parametro === 'potenciaMed') {
+                inputsContainer.innerHTML = `
+                    <label for="potenciaMax">Potencia Maxima (w): </label>
+                    <input for type="number" id="potenciaMax"><br><br>
+                `;
+            }else if (parametro === 'potenciaMedAmplitud') {
+                inputsContainer.innerHTML = `
+                    <label for="potenciaMed">Potencia Media (w): </label>
+                    <input for type="number" id="potenciaMed"><br><br>
+                `;
+            }
+        }
+    
+        document.getElementById('selectParametro').addEventListener('change', function () {
+            generarCamposDeEntrada(this.value);
+        });
+    </script>
+</body>
+
+</html>
